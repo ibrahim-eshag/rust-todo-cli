@@ -27,8 +27,8 @@ pub enum Action {
     Archive { title: Option<String> },
     #[clap(about = "Removes entry with id from todo list")]
     Remove { title: Option<String> },
-    #[clap(about = "Removes all entries from todo list")]
-    Clear,
+    // #[clap(about = "Removes all entries from todo list")]
+    // Clear,
     #[clap(about = "Marks item with title as done on todo list")]
     Done { title: Option<String> },
     #[clap(about = "undo a todo item")]

@@ -77,7 +77,6 @@ fn main() -> std::io::Result<()> {
         None => {
             println!("No command received, please use --help for more info");
         }
-        _ => {}
     }
 
     Ok(())
