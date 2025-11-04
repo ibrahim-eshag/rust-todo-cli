@@ -14,17 +14,6 @@ pub fn save_to_file(todo: Todo) -> io::Result<()> {
     save_file(&file_name, &todo.description)
 }
 
-// it's more convenient to remove the directory, but took the chance to learn how to remove files
-pub fn remove_all_done_todos() {
-    let path = "todos_data/.archive";
-    let files = fs::read_dir(path).unwrap();
-    for file in files {
-        let file = file.unwrap();
-        let file_name = file.path();
-        remove_file(file_name.to_str().unwrap());
-    }
-}
-
 pub fn remove_todo(title: &str) -> io::Result<()> {
     let path = find_todo_path_by_title(title)?;
     remove_file(&path)
@@ -77,11 +66,6 @@ pub fn show_todo_description(title: &str) -> io::Result<String> {
     read_file(&path)
 }
 
-pub fn move_to_pending(title: &str) {
-    let path = format!("todos_data/.archive/{}.done.md", title);
-    let path_pending = format!("todos_data/{}.md", title);
-    move_file(&path, &path_pending);
-}
 pub fn move_to_archive(title: &str) -> io::Result<()> {
     let path = find_todo_path_by_title(&title)?;
     let status = get_todo_status(&path).to_string();
@@ -116,7 +100,6 @@ fn read_file(path: &str) -> io::Result<String> {
     Ok(content)
 }
 
-// TODO: better to keep it generic by passing array of paths
 pub fn remove_all_todos() {
     let path = "todos_data";
     remove_dir(path);

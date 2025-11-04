@@ -74,6 +74,10 @@ fn main() -> std::io::Result<()> {
                 println!("No command received, please use --help for more info");
             }
         }
+        Some(Action::Clear) => {
+            file_manager::remove_all_todos();
+            println!("All todos removed successfully..");
+        }
         None => {
             println!("No command received, please use --help for more info");
         }
