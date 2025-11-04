@@ -4,11 +4,11 @@ use clap::Parser;
 #[clap(author, version, about, long_about = None)]
 pub struct Args {
     #[clap(subcommand)]
-   pub command: Option<Action>,
+    pub command: Option<Action>,
     /// Creates or modifies todo list at specified path
     #[clap(short, long, default_value = "./todos_data/")]
     pub todos_dir: String,
-    }
+}
 
 #[derive(clap::Subcommand)]
 pub enum Action {
@@ -22,15 +22,15 @@ pub enum Action {
     #[clap(about = "List all todos")]
     List,
     #[clap(about = "Show todo description")]
-    Show {  title: Option<String> },
+    Show { title: Option<String> },
     #[clap(about = "Archive a todo item")]
-    Archive {  title: Option<String> },
+    Archive { title: Option<String> },
     #[clap(about = "Removes entry with id from todo list")]
     Remove { title: Option<String> },
     #[clap(about = "Removes all entries from todo list")]
     Clear,
     #[clap(about = "Marks item with title as done on todo list")]
-    Done { title: Vec<String> },
+    Done { title: Option<String> },
     #[clap(about = "undo a todo item")]
-    Undo {  title: Vec<String> },
+    Undo { title: Option<String> },
 }

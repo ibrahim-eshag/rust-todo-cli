@@ -4,6 +4,15 @@ pub enum Status {
     Done,
 }
 
+impl std::fmt::Display for Status {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Status::Done => write!(f, "done"),
+            Status::Pending => write!(f, "todo"),
+        }
+    }
+}
+
 #[derive(Debug)]
 pub struct Todo {
     pub title: String,
@@ -14,7 +23,12 @@ pub struct Todo {
 impl Todo {
     // convert title to slug
     pub fn normalize_title(&mut self) {
-        self.title = self.title.to_lowercase().replace(" ", "-");
+        let suffix = if self.status == Status::Pending {
+            ".todo"
+        } else {
+            ".done"
+        };
+        self.title = format!("{}{}", self.title.to_lowercase().replace(" ", "-"), suffix);
     }
 
     pub fn denormalize_title(&mut self) {
