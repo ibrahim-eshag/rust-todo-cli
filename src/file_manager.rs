@@ -25,6 +25,21 @@ pub fn remove_all_done_todos() {
     }
 }
 
+pub fn remove_todo(title: &str)-> io::Result<()> {
+    let path = find_todo_path_by_title(title)?;
+    remove_file(&path)
+}
+
+fn find_todo_path_by_title(title: &str) -> io::Result<String> {
+    let paths = [format!("todos_data/{}.md", title),format!("todos_data/{}.done.md", title),format!("todos_data/.archive/{}.md", title), format!("todos_data/.archive/{}.done.md", title)];
+    for p in paths {
+        if Path::new(&p).exists() {
+            return Ok(p);
+        }
+    }
+    Err(io::Error::new(io::ErrorKind::NotFound, "Todo not found"))
+}
+
 pub fn list_all_todos() {
     let path = "todos_data";
     list_dir_files(path, false);
@@ -36,6 +51,21 @@ pub fn list_all_todos() {
 pub fn show_todo_description(title: &str) -> io::Result<String> {
     let path = format!("todos_data/{}.md", title);
     read_file(&path)
+}
+
+pub fn move_to_pending(title: &str) {
+    let path = format!("todos_data/.archive/{}.done.md", title);
+    let path_pending = format!("todos_data/{}.md", title);
+    move_file(&path, &path_pending);
+}
+pub fn move_to_archive(title: &str) ->io::Result<()>{
+    let path = format!("todos_data/{}.md", title);
+    let path_archive = format!("todos_data/.archive/{}.done.md", title);
+    move_file(&path, &path_archive)
+}
+
+fn move_file(from: &str, to: &str)->io::Result<()> {
+    fs::rename(from, to)
 }
 
 fn list_dir_files(path: &str, is_archived:bool) {

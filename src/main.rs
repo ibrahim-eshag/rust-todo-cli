@@ -32,10 +32,36 @@ fn main() -> std::io::Result<()> {
                 Some(title)=>{
                    match  show_todo_description(&title){
                        Ok(description)=>println!("{}", description),
-                       Err(e)=>eprintln!("Failed to show entry: {:?}", e),
+                       Err(e)=>eprintln!("Failed to show todo: {:?}", e),
                    }
                 }
                 None=>{
+                    println!("No command received, please use --help for more info");
+                }
+            }
+        }
+        Some(Action::Archive { title }) => {
+            match title {
+                Some(title)=> {
+                    match file_manager::move_to_archive(&title){
+                        Ok(())=>println!("{} archived successfully.", title),
+                        Err(e)=>eprintln!("Failed to archive todo: {:?}", e),
+                    }
+                }
+                None=> {
+                    println!("No command received, please use --help for more info");
+                }
+            }
+        }
+        Some(Action::Remove { title }) => {
+            match title {
+                Some(title)=> {
+                    match file_manager::remove_todo(&title){
+                        Ok(())=>println!("{} removed successfully.", title),
+                        Err(e)=>eprintln!("Failed to remove todo: {:?}", e),
+                    }
+                }
+                None=> {
                     println!("No command received, please use --help for more info");
                 }
             }
