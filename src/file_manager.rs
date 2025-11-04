@@ -3,11 +3,13 @@ use std::fs;
 use std::io;
 use std::path::Path;
 
+const TODOS_HOME_DIR: &str = "todos_data";
+const TODOS_ARCHIVE_DIR: &str = "todos_data/.archive";
 // TODO: this one better to be moved to TODO struct
 pub fn save_to_file(todo: Todo) -> io::Result<()> {
     let file_name = match todo.status {
-        Status::Pending => format!("todos_data/{}.md", todo.title),
-        Status::Done => format!("todos_data/.archive/{}.done.md", todo.title),
+        Status::Pending => format!("{TODOS_HOME_DIR}/{}.md", todo.title),
+        Status::Done => format!("{TODOS_ARCHIVE_DIR}/{}.done.md", todo.title),
     };
 
     println!("Saving to file: {}", file_name);
@@ -24,10 +26,10 @@ pub fn change_todo_status(title: &str, status: Status) -> io::Result<()> {
     // changing the status of a todo immediately move it to the home directory (even if it's in archive)
     let new_path = match status {
         Status::Done => {
-            format!("todos_data/{}.done.md", title)
+            format!("{TODOS_HOME_DIR}/{}.done.md", title)
         }
         Status::Pending => {
-            format!("todos_data/{}.todo.md", title)
+            format!("{TODOS_HOME_DIR}/{}.todo.md", title)
         }
     };
 
@@ -40,10 +42,10 @@ fn rename_file(old_path: &str, new_path: &str) -> io::Result<()> {
 }
 fn find_todo_path_by_title(title: &str) -> io::Result<String> {
     let paths = [
-        format!("todos_data/{}.todo.md", title),
-        format!("todos_data/{}.done.md", title),
-        format!("todos_data/.archive/{}.todo.md", title),
-        format!("todos_data/.archive/{}.done.md", title),
+        format!("{TODOS_HOME_DIR}/{}.todo.md", title),
+        format!("{TODOS_HOME_DIR}/{}.done.md", title),
+        format!("{TODOS_ARCHIVE_DIR}/{}.todo.md", title),
+        format!("{TODOS_ARCHIVE_DIR}/{}.done.md", title),
     ];
     for p in paths {
         if Path::new(&p).exists() {
@@ -54,10 +56,10 @@ fn find_todo_path_by_title(title: &str) -> io::Result<String> {
 }
 
 pub fn list_all_todos() {
-    let path = "todos_data";
+    let path = TODOS_HOME_DIR;
     list_dir_files(path, false);
 
-    let path = "todos_data/.archive";
+    let path = TODOS_ARCHIVE_DIR;
     list_dir_files(path, true);
 }
 
@@ -70,7 +72,7 @@ pub fn move_to_archive(title: &str) -> io::Result<()> {
     let path = find_todo_path_by_title(&title)?;
     let status = get_todo_status(&path).to_string();
     println!("Moving to archive: {}", path);
-    let path_archive = format!("todos_data/.archive/{}.{}.md", title,status);
+    let path_archive = format!("{TODOS_ARCHIVE_DIR}/{}.{}.md", title,status);
     move_file(&path, &path_archive)
 }
 
@@ -101,10 +103,10 @@ fn read_file(path: &str) -> io::Result<String> {
 }
 
 pub fn remove_all_todos() {
-    let path = "todos_data";
+    let path = TODOS_HOME_DIR;
     remove_dir(path);
 
-    let path = "todos_data/.archive";
+    let path = TODOS_ARCHIVE_DIR;
     remove_dir(path);
 }
 
